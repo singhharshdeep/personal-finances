@@ -1,13 +1,22 @@
 const Sequelize = require('sequelize');
+require('dotenv').config();
 
-const sequelize = new Sequelize('personal_finances', 'root', 'root', {
+let databaseName;
+
+if (process.env.NODE_ENV === 'test') {
+    databaseName = 'personal_finances_test';
+} else {
+    databaseName = 'personal_finances';
+}
+
+const sequelize = new Sequelize(databaseName, 'root', 'root', {
     host: 'localhost',
     dialect: 'mysql'
 });
 
 async function connectDb() {
     try {
-        const connection = await sequelize.authenticate();
+        await sequelize.authenticate();
         console.log('Database connection successfully established');
     } catch (err) {
         console.error('Unable to connect to database: ', err);

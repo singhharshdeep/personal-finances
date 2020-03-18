@@ -1,13 +1,22 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const cors = require('cors');
 
 const { connectDb } = require('./config/db');
+const authRouter = require('./api/routes/auth');
 
 const app = express();
 
+/** Express Configuration */
+app.use(cors());
 app.use(passport.initialize());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+require('./config/passport');
+
+/** Routes */
+app.use('/api/v1/', authRouter);
 
 const PORT = 3000;
 

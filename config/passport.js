@@ -1,18 +1,30 @@
-const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-var bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
+const passport = require('passport');
 
-var User = require('../models/User');
+const User = require('../models/User');
 
-passport.use(new LocalStrategy(
-    (email, password, done) => {
-        User.findOne({
-            where: { email }
-        }, (err, user) => {
-            if (err) return done(err)
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+},
+    async (username, password, done) => {
+        try {
+            const user = await User.findOne({
+                where: { email: username }
+            });
+
+            /** User not found */
             if (!user) return done(null, false);
 
-            return done(null, user);
-        });
+            console.log(bcrypt.com)
+            if (bcrypt.compareSync(password, user.password)) {
+                return done(null, user);
+            } else {
+                return done(null, false);
+            }
+        } catch(err) {
+            console.error(err);
+        }
     }
 ));
