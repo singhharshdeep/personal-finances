@@ -7,8 +7,7 @@ const controller = require('../../api/controllers/authentication.controller');
 describe('Authentication', () => {
     beforeAll(async () => {
         await connectDb();
-        passport.initialize();
-        require('../../config/passport')(passport);
+        require('../../config/passport');
     });
 
     afterAll(async () => {
@@ -56,23 +55,5 @@ describe('Authentication', () => {
 
         const response = await controller.signup(req, res, null);
         expect(response).toHaveProperty('email', req.body.email);
-    });
-
-    it('tries signing in user', async () => {
-        const req = {
-            body: {
-                email: 'new_user@email.com',
-                password: 'password',
-            }
-        };
-        const res = {
-            status: val => val,
-            json: body => body
-        };
-
-        const response = await controller.login(req, res, (message) => console.log(message));
-
-        console.log(response);
-        // expect(response).toHaveProperty('email', req.body.email);
     });
 });
