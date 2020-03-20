@@ -21,8 +21,6 @@ exports.login = async (req, res, next) => {
     }
 
     passport.authenticate('local', function(err, user, info) {
-        console.log(err);
-        console.log(user);
         if (err) {
             /** There was an error while authenticating the user */
             return res.status(401).json({ error: ''});

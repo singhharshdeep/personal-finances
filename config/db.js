@@ -1,17 +1,25 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
 
-let databaseName;
+const host = 'personal-finances-test.cobpu0yl0hux.us-east-2.rds.amazonaws.com';
+const password = 'personal-finances';
 
 if (process.env.NODE_ENV === 'test') {
-    databaseName = 'personal_finances_test';
+    databaseName = 'personal-finances-test';
 } else {
-    databaseName = 'personal_finances';
+    databaseName = 'personal-finances-dev';
 }
 
-const sequelize = new Sequelize(databaseName, 'root', 'root', {
-    host: 'localhost',
-    dialect: 'mysql'
+const sequelize = new Sequelize(databaseName, 'root', password, {
+    host: host,
+    dialect: 'mysql',
+    port: 3306,
+    logging: console.log,
+    dialectOptions: {
+        ssl: 'Amazon RDS'
+    },
+    pool: { maxConnections: 5, maxIdleTime: 30 },
+    language: 'en'
 });
 
 async function connectDb() {
