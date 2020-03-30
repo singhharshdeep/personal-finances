@@ -16,3 +16,5 @@ const Item = sequelize.define('items', {
         allowNull: false
     }
 });
+
+module.exports = Item;
