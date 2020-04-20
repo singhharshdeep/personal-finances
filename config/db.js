@@ -1,29 +1,37 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
 
-const host = 'personal-finances-test.cobpu0yl0hux.us-east-2.rds.amazonaws.com';
-const password = 'personal-finances';
+const host = '34.68.191.126';
+const password = 'root';
 
 if (process.env.NODE_ENV === 'test') {
-    databaseName = 'personal-finances-test';
+    databaseName = 'personalfinancestest';
 } else {
-    databaseName = 'personal-finances-dev';
+    databaseName = 'personalfinancesdev';
 }
 
-const sequelize = new Sequelize(databaseName, 'root', password, {
-    host: host,
-    dialect: 'mysql',
-    port: 3306,
-    logging: console.log,
-    dialectOptions: {
-        ssl: 'Amazon RDS'
-    },
-    pool: { maxConnections: 5, maxIdleTime: 30 },
-    language: 'en'
-});
+let sequelize;
+
+function getInstance() {
+    if (!sequelize) {
+        sequelize = getConnection();
+    }
+    return sequelize;
+}
+
+function getConnection() {
+    return new Sequelize(databaseName, 'root', password, {
+        host: host,
+        dialect: 'mysql',
+        port: 3306,
+        logging: console.log,
+        language: 'en'
+    });
+}
 
 async function connectDb() {
     try {
+        getInstance();
         await sequelize.authenticate();
         console.log('Database connection successfully established');
     } catch (err) {
@@ -31,4 +39,4 @@ async function connectDb() {
     }
 }
 
-module.exports = { sequelize, connectDb };
+module.exports = { getInstance, connectDb };

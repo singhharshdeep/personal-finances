@@ -1,13 +1,16 @@
 const Sequelize = require('sequelize');
-const { sequelize } = require('../config/db');
+const { getInstance } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Item = require('./Item');
+
+const sequelize = getInstance();
 
 const User = sequelize.define('users', {
     id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true
+        defaultValue: Sequelize.UUIDV4
     },
     firstName: {
         type: Sequelize.STRING,
@@ -32,11 +35,16 @@ const User = sequelize.define('users', {
         }
     },
     salt: Sequelize.STRING,
-    provider: Sequelize.STRING
+    provider: Sequelize.STRING,
 }, {
     timestamps: true,
     paranoid: true,
     underscored: true,
+    classMehods: {
+        associate: models => {
+            User.hasMany(models.Item, { as: 'items' });
+        }
+    },
     instanceMethods: {
         toJSON: () => {
             const values = Object.assign({}, this.get());

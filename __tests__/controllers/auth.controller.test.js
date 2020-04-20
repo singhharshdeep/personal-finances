@@ -1,19 +1,11 @@
-const { connectDb, sequelize } = require('../../config/db');
 require('dotenv').config();
 const User = require('../../models/User');
 const controller = require('../../api/controllers/auth.controller');
 
+const { connectTestDb, closeDbConnection } = require('../../utils/test.utils');
+
 describe('Authentication', () => {
-    beforeAll(async () => {
-        await connectDb();
-        require('../../config/passport');
-    });
-
-    afterAll(async () => {
-        await sequelize.close();
-        console.log('Database connection closed');
-    })
-
+    
     it('tests database connection', async () => {
         await User.sync({ force: true });
         await User.create({

@@ -1,19 +1,24 @@
 const Sequelize = require('sequelize');
-const { sequelize } = require('../config/db');
+const { getInstance } = require('../config/db');
+const User = require('./User');
+
+const sequelize = getInstance();
 
 const Item = sequelize.define('items', {
     id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true
+        defaultValue: Sequelize.UUIDV4
     },
     access_token: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    item_id: {
-        type: Sequelize.STRING,
-        allowNull: false
+}, {
+    classMethods: {
+        associate: models => {
+            Item.belongsTo(models.User);
+        }
     }
 });
 
